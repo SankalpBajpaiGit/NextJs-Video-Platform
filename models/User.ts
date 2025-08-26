@@ -1,12 +1,10 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import mongoose, { Schema, model, models, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
-export interface IUser {
+// The interface should extend Mongoose's Document type
+export interface IUser extends Document {
   email: string;
   password: string;
-  _id?: mongoose.Types.ObjectId;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 const userSchema = new Schema<IUser>(
@@ -19,11 +17,19 @@ const userSchema = new Schema<IUser>(
   }
 );
 
-userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
+// Your pre-save hook for hashing is correct and will be used.
+userSchema.pre<IUser>("save", async function (next) {
+  // Only hash the password if it has been modified (or is new)
+  if (!this.isModified("password")) {
+    return next();
   }
-  next();
+  try {
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error: any) {
+    next(error);
+  }
 });
 
 const User = models?.User || model<IUser>("User", userSchema);

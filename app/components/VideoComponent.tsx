@@ -1,9 +1,16 @@
-"use client"
+"use client";
 import { IKVideo } from "imagekitio-next";
 import Link from "next/link";
 import { IVideo } from "@/models/Video";
 
-export default function VideoComponent({ video }: { video: IVideo }) {
+// Update the props to accept urlEndpoint
+export default function VideoComponent({
+  video,
+  urlEndpoint,
+}: {
+  video: IVideo;
+  urlEndpoint: string;
+}) {
   return (
     <div className="card bg-base-100 shadow hover:shadow-lg transition-all duration-300">
       <figure className="relative px-4 pt-4">
@@ -12,7 +19,9 @@ export default function VideoComponent({ video }: { video: IVideo }) {
             className="rounded-xl overflow-hidden relative w-full"
             style={{ aspectRatio: "9/16" }}
           >
+            {/* Pass the urlEndpoint directly to the IKVideo component */}
             <IKVideo
+              urlEndpoint={urlEndpoint}
               path={video.videoUrl}
               transformation={[
                 {

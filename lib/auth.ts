@@ -2,7 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDatabase } from "./db";
 import User from "@/models/User";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs"; // Ensure this is bcryptjs
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -10,11 +10,14 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "passsword" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("\n--- Authorize function started ---");
+
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Missing email or passsword");
+          console.log("Authorize error: Missing email or password.");
+          throw new Error("Missing email or password");
         }
 
         try {
@@ -22,24 +25,33 @@ export const authOptions: NextAuthOptions = {
           const user = await User.findOne({ email: credentials.email });
 
           if (!user) {
-            throw new Error("No user found with this");
+            console.log(`No user found with email: ${credentials.email}`);
+            throw new Error("No user found with this email");
           }
+
+          console.log(`User found in DB: ${user.email}`);
+          console.log("Comparing passwords...");
 
           const isValid = await bcrypt.compare(
             credentials.password,
-            user.passsword
+            user.password
           );
 
+          console.log(`Password comparison result (isValid): ${isValid}`);
+
           if (!isValid) {
-            throw new Error("invalid password");
+            console.log("Password comparison failed.");
+            throw new Error("Invalid password");
           }
 
+          console.log("--- Authorize successful ---");
           return {
             id: user._id.toString(),
             email: user.email,
           };
         } catch (error) {
-          console.error("Auth error: ", error);
+          console.error("Error in authorize function:", error);
+          // Re-throw the error to let NextAuth handle it
           throw error;
         }
       },
@@ -54,7 +66,8 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
+        // Add the user ID to the session object
+        (session.user as any).id = token.id;
       }
       return session;
     },
@@ -65,7 +78,6 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

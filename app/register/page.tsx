@@ -16,8 +16,6 @@ function RegisterPage() {
     }
 
     try {
-      // react-query
-      // loading, error, debounce
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: {

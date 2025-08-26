@@ -1,14 +1,14 @@
+import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import User from "@/models/User";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
 
-    if (!email || !password) {
+    if (!email || !password || password.length < 6) {
       return NextResponse.json(
-        { error: "Email and password are required" },
+        { error: "Invalid input. Password must be at least 6 characters." },
         { status: 400 }
       );
     }
@@ -18,25 +18,27 @@ export async function POST(request: NextRequest) {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
-        { error: "User already registered" },
-        { status: 400 }
+        { error: "User with this email already exists" },
+        { status: 409 }
       );
     }
 
+    // **THE FIX**: Pass the plain password directly to the create method.
+    // The pre-save hook in your User model will handle the hashing automatically.
     await User.create({
       email,
-      password,
+      password: password,
     });
 
     return NextResponse.json(
       { message: "User registered successfully" },
-      { status: 400 }
+      { status: 201 }
     );
   } catch (error) {
-    console.error("Registration error", error);
+    console.error("Registration error:", error);
     return NextResponse.json(
-      { error: "Failed to register user" },
-      { status: 400 }
+      { error: "An internal server error occurred." },
+      { status: 500 }
     );
   }
 }
