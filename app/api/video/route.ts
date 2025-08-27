@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/db";
 import Video from "@/models/Video";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache"; // <--- 1. IMPORT THIS
 
 // This function handles GET requests to fetch all videos
 export async function GET() {
@@ -38,19 +39,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // **THE FIX**: Automatically generate a thumbnail URL from the video URL
-    // This uses ImageKit's transformation feature to create a thumbnail.
     const thumbnailUrl = `${body.videoUrl}/tr:n-thumbnail`;
 
     // Create the new video with all required fields
     const newVideo = await Video.create({
       title: body.title,
-      // Provide a default empty string for description if it's not sent
       description: body.description || "",
       videoUrl: body.videoUrl,
-      // Add the generated thumbnail URL to satisfy the schema
       thumbnailUrl: thumbnailUrl,
     });
+    
+    revalidatePath('/'); // <--- 2. ADD THIS LINE AFTER CREATING THE VIDEO
 
     return NextResponse.json(newVideo, { status: 201 });
   } catch (error) {
