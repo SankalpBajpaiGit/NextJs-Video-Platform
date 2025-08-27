@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import FileUpload from "./FileUpload";
 import { useNotification } from "./Notification";
 
+// Define the type for the upload response, matching FileUpload.tsx
+interface UploadResponse {
+  filePath: string;
+}
+
 export default function VideoUploadForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -16,7 +21,8 @@ export default function VideoUploadForm() {
   const router = useRouter();
   const { showNotification } = useNotification();
 
-  const handleUploadSuccess = (res: any) => {
+  // Use the specific type here instead of 'any'
+  const handleUploadSuccess = (res: UploadResponse) => {
     setVideoUrl(res.filePath);
     setIsUploading(false);
     showNotification("Video uploaded successfully!", "success");
@@ -40,7 +46,6 @@ export default function VideoUploadForm() {
     setIsSubmitting(true);
 
     try {
-      // **THE FIX**: Changed the API endpoint to singular to match your folder structure.
       const response = await fetch("/api/video", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -56,7 +61,10 @@ export default function VideoUploadForm() {
       router.refresh();
     } catch (error) {
       console.error(error);
-      showNotification("An error occurred while publishing the video.", "error");
+      showNotification(
+        "An error occurred while publishing the video.",
+        "error"
+      );
     } finally {
       setIsSubmitting(false);
     }

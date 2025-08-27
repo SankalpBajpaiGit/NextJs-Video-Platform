@@ -2,7 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDatabase } from "./db";
 import User from "@/models/User";
-import bcrypt from "bcryptjs"; // Ensure this is bcryptjs
+import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -51,7 +51,6 @@ export const authOptions: NextAuthOptions = {
           };
         } catch (error) {
           console.error("Error in authorize function:", error);
-          // Re-throw the error to let NextAuth handle it
           throw error;
         }
       },
@@ -66,8 +65,8 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        // Add the user ID to the session object
-        (session.user as any).id = token.id;
+        // Define the shape of session.user instead of using 'any'
+        (session.user as { id: string | undefined }).id = token.id as string;
       }
       return session;
     },
