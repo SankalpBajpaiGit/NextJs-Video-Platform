@@ -1,9 +1,7 @@
 "use client";
-import { IKVideo } from "@imagekit/next";
 import Link from "next/link";
 import { IVideo } from "@/models/Video";
 
-// Update the props to accept urlEndpoint
 export default function VideoComponent({
   video,
   urlEndpoint,
@@ -19,16 +17,8 @@ export default function VideoComponent({
             className="rounded-xl overflow-hidden relative w-full"
             style={{ aspectRatio: "9/16" }}
           >
-            {/* Pass the urlEndpoint directly to the IKVideo component */}
-            <IKVideo
-              urlEndpoint={urlEndpoint}
-              path={video.videoUrl}
-              transformation={[
-                {
-                  height: "1920",
-                  width: "1080",
-                },
-              ]}
+            <video
+              src={`${urlEndpoint}/${video.videoUrl}`}
               controls={video.controls}
               className="w-full h-full object-cover"
             />
