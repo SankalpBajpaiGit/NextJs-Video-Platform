@@ -2,21 +2,26 @@
 
 import { upload } from "@imagekit/next";
 import { useState } from "react";
-// Import the specific type from the library for accuracy
-import type { UploadResponse } from "imagekit-javascript/dist/src/interfaces";
-
-// Define a more specific type for what your app needs from the response
-interface AppUploadResponse extends UploadResponse {
+interface AppUploadResponse {
   filePath: string;
+  url?: string;
+  thumbnailUrl?: string;
+  name?: string;
 }
 
 interface FileUploadProps {
   onSuccess: (res: AppUploadResponse) => void;
   onProgress?: (progress: number) => void;
+  onError?: (message: string) => void;
   fileType?: "image" | "video";
 }
 
-const FileUpload = ({ onSuccess, onProgress, fileType }: FileUploadProps) => {
+const FileUpload = ({
+  onSuccess,
+  onProgress,
+  onError,
+  fileType,
+}: FileUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,7 +66,9 @@ const FileUpload = ({ onSuccess, onProgress, fileType }: FileUploadProps) => {
       onSuccess(res as AppUploadResponse);
     } catch (err) {
       console.error("Upload failed", err);
-      setError("The file upload failed. Please try again.");
+      const message = "The file upload failed. Please try again.";
+      setError(message);
+      onError?.(message);
     } finally {
       setUploading(false);
     }

@@ -35,6 +35,12 @@ export default function VideoUploadForm() {
     }
   };
 
+  const handleUploadError = (message: string) => {
+    setIsUploading(false);
+    setUploadProgress(0);
+    showNotification(message, "error");
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -106,6 +112,7 @@ export default function VideoUploadForm() {
             <FileUpload
               onSuccess={handleUploadSuccess}
               onProgress={handleUploadProgress}
+              onError={handleUploadError}
               fileType="video"
             />
           </div>
