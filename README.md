@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Fullstack Video Platform
 
-## Getting Started
+A fully functional, media-focused full-stack web application built using **Next.js (App Router)**. This platform enables users to register, log in, and upload videos seamlessly, utilizing **ImageKit** for optimized media delivery and storage. 
 
-First, run the development server:
+## 🚀 Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+*   **Robust Authentication:** Secure user registration and authentication enabled by NextAuth.js.
+*   **Media Management:** Seamless video uploads and optimized video/image delivery powered by ImageKit.
+*   **Database Integration:** MongoDB paired with Mongoose for structured, reliable data storage.
+*   **Modern UI/UX:** Styled using Tailwind CSS v4 with clean, scalable icons from Lucide React.
+*   **API Routes:** Built-in backend endpoints managed natively via Next.js.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Technology Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+*   **Frontend:** [Next.js](https://nextjs.org/) (React 19), [Tailwind CSS](https://tailwindcss.com/), [Lucide React](https://lucide.dev/)
+*   **Database:** [MongoDB](https://www.mongodb.com/), [Mongoose](https://mongoosejs.com/)
+*   **Authentication:** [NextAuth.js](https://next-auth.js.org/)
+*   **Media & Storage:** [ImageKit](https://imagekit.io/) (`@imagekit/next`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ⚙️ Getting Started
 
-## Learn More
+### Prerequisites
+*   Node.js
+*   MongoDB Database URI
+*   ImageKit URL, Public Key, and Private Key
 
-To learn more about Next.js, take a look at the following resources:
+### Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2.  **Environment Variables:**
+    Create a `.env` file in the root directory and add the following keys:
+    ```env
+    MONGODB_URI=your_mongodb_uri
+    NEXTAUTH_SECRET=your_nextauth_secret
+    NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT=your_imagekit_url_endpoint
+    NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
+    IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+    ```
 
-## Deploy on Vercel
+3.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4.  Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
